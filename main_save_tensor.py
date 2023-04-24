@@ -29,6 +29,9 @@ with open('data/female.txt', 'r') as f:
 with open('data/male.txt', 'r') as f:
     contents = f.read()
     print(contents)
+
+
+    
     attribute_words += contents.replace('\n',' ').split()
 
 with open('data/stereotype.txt', 'r') as f:
