@@ -1,12 +1,12 @@
 from tqdm.auto import tqdm
 import torch
 
-input_ids = torch.load('data/tensor/delete_special_ids/input_ids.pt')
-attention_mask = torch.load('data/tensor/delete_special_ids/attention_mask.pt')
-labels = torch.load('data/tensor/delete_special_ids/labels.pt')
-qt_mask = torch.load('data/tensor/delete_special_ids/qt_mask.pt')
+input_ids = torch.load('data/tensor/not_delete_special_ids/input_ids.pt')
+attention_mask = torch.load('data/tensor/not_delete_special_ids/attention_mask.pt')
+labels = torch.load('data/tensor/not_delete_special_ids/labels.pt')
+# qt_mask = torch.load('data/tensor/delete_special_ids/qt_mask.pt')
 
-encodings = {'input_ids': input_ids, 'attention_mask': attention_mask, 'labels': labels , 'qt_mask': qt_mask}
+encodings = {'input_ids': input_ids, 'attention_mask': attention_mask, 'labels': labels}
 
 
 class Dataset(torch.utils.data.Dataset):
@@ -29,7 +29,7 @@ loader = torch.utils.data.DataLoader(dataset, batch_size=8, shuffle=True)
 
 
 # 初始化模型
-from transformers_local.src.transformers import BertConfig
+from transformers import BertConfig
 
 config = BertConfig(
     vocab_size=28996,  # we align this to the tokenizer vocab_size
@@ -40,7 +40,7 @@ config = BertConfig(
     type_vocab_size=1
 )
 
-from transformers_local.src.transformers import BertForMaskedLM
+from transformers import BertForMaskedLM
 
 model = BertForMaskedLM(config)
 
@@ -70,10 +70,9 @@ for epoch in range(epochs):
         # pull all tensor batches required for training
         input_ids = batch['input_ids'].to(device)
         attention_mask = batch['attention_mask'].to(device)
-        qt_mask = batch['qt_mask'].to(device)
         labels = batch['labels'].to(device)
         # process
-        outputs = model(input_ids, attention_mask=attention_mask,qt_mask=qt_mask,
+        outputs = model(input_ids, attention_mask=attention_mask,
                         labels=labels)
         # extract loss
         loss = outputs.loss
@@ -85,6 +84,6 @@ for epoch in range(epochs):
         loop.set_description(f'Epoch {epoch}')
         loop.set_postfix(loss=loss.item())
 
-model.save_pretrained('qtbert')  # and don't forget to save filiBERTo!
+model.save_pretrained('simplebert')  # and don't forget to save filiBERTo!
 
 

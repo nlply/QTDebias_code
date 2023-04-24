@@ -1019,7 +1019,7 @@ class BertModel(BertPreTrainedModel):
             past_key_values_length=past_key_values_length,
         )
         # todo: 此时记录下需要隐形传态的词
-        qt_state = embedding_output.clone().detach() * qt_mask.unsqueeze(-1)
+        qt_state = (embedding_output * qt_mask.unsqueeze(-1)).clone().detach()
         encoder_outputs = self.encoder(
             embedding_output,
             attention_mask=extended_attention_mask,
@@ -1035,7 +1035,7 @@ class BertModel(BertPreTrainedModel):
 
         sequence_output = encoder_outputs[0]
         # todo:此处进行量子隐形传态回传
-        sequence_output = sequence_output * (1 - qt_mask.unsqueeze(-1))
+        sequence_output = (sequence_output * (1 - qt_mask.unsqueeze(-1))).clone().detach()
         sequence_output = sequence_output + qt_state
         pooled_output = self.pooler(sequence_output) if self.pooler is not None else None
 
