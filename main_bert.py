@@ -1,9 +1,9 @@
 from tqdm.auto import tqdm
 import torch
 
-input_ids = torch.load('data/tensor/not_delete_special_ids/input_ids.pt')
-attention_mask = torch.load('data/tensor/not_delete_special_ids/attention_mask.pt')
-labels = torch.load('data/tensor/not_delete_special_ids/labels.pt')
+input_ids = torch.load('data/tensor/input_ids.pt')
+attention_mask = torch.load('data/tensor/attention_mask.pt')
+labels = torch.load('data/tensor/labels.pt')
 # qt_mask = torch.load('data/tensor/delete_special_ids/qt_mask.pt')
 
 encodings = {'input_ids': input_ids, 'attention_mask': attention_mask, 'labels': labels}

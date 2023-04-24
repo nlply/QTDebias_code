@@ -10,12 +10,12 @@ tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', max_len=512)
 tokens = tokenizer('I am a PhD')
 print(tokens)
 
-with open('data/text/news/news-commentary-v15.en', 'r', encoding='utf-8') as fp:
+with open('data/text/news/news-commentary-v15.en.lower', 'r', encoding='utf-8') as fp:
     lines = fp.read().split('\n')
 
 print('tokenizer...')
 
-batch = tokenizer.batch_encode_plus(lines,padding=True,truncation=True,max_length=512)
+batch = tokenizer.batch_encode_plus(lines[:10000],padding=True,truncation=True,max_length=512)
 input_ids = batch['input_ids']
 attention_mask = batch['attention_mask']
 
@@ -24,19 +24,12 @@ attribute_words = []
 print('loading bias words...')
 with open('data/female.txt', 'r') as f:
     contents = f.read()
-    print(contents)
     attribute_words += contents.replace('\n',' ').split()
 with open('data/male.txt', 'r') as f:
     contents = f.read()
-    print(contents)
-
-
-    
     attribute_words += contents.replace('\n',' ').split()
-
 with open('data/stereotype.txt', 'r') as f:
     contents = f.read()
-    print(contents)
     target_words += contents.replace('\n',' ').split()
 print('decoding bias words...')
 # tokenizer.encode(['i','like','me'],add_special_tokens=False)
@@ -72,7 +65,7 @@ for i in range(input_ids.shape[0]):
     input_ids[i, selection] = 3  # our custom [MASK] token == 3
 
 
-torch.save(input_ids,'data/tensor/input_ids.pt')
-torch.save(mask,'data/tensor/attention_mask.pt')
-torch.save(labels,'data/tensor/labels.pt')
-torch.save(qt_mask,'data/tensor/qt_mask.pt')
+torch.save(input_ids, 'data/tensor/input_ids.pt')
+torch.save(mask, 'data/tensor/attention_mask.pt')
+torch.save(labels, 'data/tensor/labels.pt')
+torch.save(qt_mask, 'data/tensor/qt_mask.pt')
